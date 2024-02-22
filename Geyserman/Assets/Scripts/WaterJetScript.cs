@@ -13,4 +13,11 @@ public class WaterJetScript : MonoBehaviour
         yield return new WaitForSeconds(2);
         Destroy(gameObject);
     }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Enemy"))
+        {
+            Destroy(gameObject);
+        }
+    }
 }
