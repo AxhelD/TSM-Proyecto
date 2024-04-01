@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 using UnityEngine;
 
 public class GeysermanMoveScript : MonoBehaviour
@@ -18,11 +19,19 @@ public class GeysermanMoveScript : MonoBehaviour
 	public GameObject downShot1;
 	public GameObject downShot2;
 	public GameObject sound;
-	public float health = 100;
+
+	public Image JetCapacity;
+
 	public float flySpeed;
 	public float runSpeed = 15;
+	public float shrinkSpeed;
+	public float neededWater;
+
 	public bool grounded = true;
 	public bool airIdle = false;
+
+	private float waterCapacity = 100f;
+	private bool isRestored = false;
 	private Rigidbody rb;
 	private Animator animator;
 	private RaycastHit raycastHit;
@@ -33,29 +42,31 @@ public class GeysermanMoveScript : MonoBehaviour
 		animator = GetComponent<Animator>();
 	}
 
-	void Update()
+    void FixedUpdate()
 	{
-		if (Physics.Raycast(transform.position + new Vector3(0,1,0), -transform.up, out raycastHit, 1.1f))
+		RestoreCapacity();
+
+		if (Physics.Raycast(transform.position + new Vector3(0, 1, 0), -transform.up, out raycastHit, 1.1f))
 		{
-			if(airIdle & !(Input.GetKey(KeyCode.E) | Input.GetKey(KeyCode.R)))
-            {
+			if (airIdle & !(Input.GetKey(KeyCode.E) | Input.GetKey(KeyCode.R)))
+			{
 				animator.SetBool("Landing", true);
-            }
+			}
 			else
-            {
+			{
 				animator.SetBool("Landing", false);
-            }
+			}
 			grounded = true;
-			
+
 		}
 		else
 		{
 			grounded = false;
 		}
-		if(health<=0)
-        {
-			if(grounded)
-            {
+		if ((float)GetComponent<GeysermanHealthScript>().geyserHealth <= 0)
+		{
+			if (grounded)
+			{
 				animator.SetBool("AirIdle", false);
 				animator.SetBool("UpShot", false);
 				animator.SetBool("ArmShot", false);
@@ -72,7 +83,7 @@ public class GeysermanMoveScript : MonoBehaviour
 				sound.SetActive(false);
 			}
 			else
-            {
+			{
 				rb.velocity = new Vector3(0, -1.5f, 0) * flySpeed;
 				animator.SetBool("AirIdle", false);
 				animator.SetBool("UpShot", false);
@@ -90,10 +101,11 @@ public class GeysermanMoveScript : MonoBehaviour
 				sound.SetActive(false);
 			}
 			return;
-        }
+		}
 		//Input W
-		if ((Input.GetKey(KeyCode.W) & !Input.GetKey(KeyCode.Y) & !Input.GetKey(KeyCode.S) & !Input.GetKey(KeyCode.G)) | (Input.GetKey(KeyCode.W) & Input.GetKey(KeyCode.Y) & Input.GetKey(KeyCode.S) & !Input.GetKey(KeyCode.G)))
+		if ((Input.GetKey(KeyCode.W) & !Input.GetKey(KeyCode.Y) & !Input.GetKey(KeyCode.S) & !Input.GetKey(KeyCode.G)) | (Input.GetKey(KeyCode.W) & Input.GetKey(KeyCode.Y) & Input.GetKey(KeyCode.S) & !Input.GetKey(KeyCode.G)) && waterCapacity > 0)
 		{
+			WaterCapacity();
 			transform.localScale = new Vector3(-1, 1, 1);
 			if (!grounded)
 			{
@@ -114,7 +126,7 @@ public class GeysermanMoveScript : MonoBehaviour
 				sound.SetActive(true);
 			}
 			else
-            {
+			{
 				rb.velocity = new Vector3(0, 0, 0);
 				animator.SetBool("AirIdle", false);
 				animator.SetBool("UpShot", false);
@@ -133,8 +145,9 @@ public class GeysermanMoveScript : MonoBehaviour
 			}
 		}
 		//Input Y
-		if ((!Input.GetKey(KeyCode.W) & Input.GetKey(KeyCode.Y) & !Input.GetKey(KeyCode.S) & !Input.GetKey(KeyCode.G)) | (Input.GetKey(KeyCode.W) & Input.GetKey(KeyCode.Y) & !Input.GetKey(KeyCode.S) & Input.GetKey(KeyCode.G)))
+		if ((!Input.GetKey(KeyCode.W) & Input.GetKey(KeyCode.Y) & !Input.GetKey(KeyCode.S) & !Input.GetKey(KeyCode.G)) | (Input.GetKey(KeyCode.W) & Input.GetKey(KeyCode.Y) & !Input.GetKey(KeyCode.S) & Input.GetKey(KeyCode.G)) && waterCapacity > 0)
 		{
+			WaterCapacity();
 			transform.localScale = new Vector3(1, 1, 1);
 			if (!grounded)
 			{
@@ -155,7 +168,7 @@ public class GeysermanMoveScript : MonoBehaviour
 				sound.SetActive(true);
 			}
 			else
-            {
+			{
 				rb.velocity = new Vector3(0, 0, 0);
 				animator.SetBool("AirIdle", false);
 				animator.SetBool("UpShot", false);
@@ -174,8 +187,9 @@ public class GeysermanMoveScript : MonoBehaviour
 			}
 		}
 		//Input S
-		if ((!Input.GetKey(KeyCode.W) & !Input.GetKey(KeyCode.Y) & Input.GetKey(KeyCode.S) & !Input.GetKey(KeyCode.G)) | (Input.GetKey(KeyCode.W) & !Input.GetKey(KeyCode.Y) & Input.GetKey(KeyCode.S) & Input.GetKey(KeyCode.G)))
+		if ((!Input.GetKey(KeyCode.W) & !Input.GetKey(KeyCode.Y) & Input.GetKey(KeyCode.S) & !Input.GetKey(KeyCode.G)) | (Input.GetKey(KeyCode.W) & !Input.GetKey(KeyCode.Y) & Input.GetKey(KeyCode.S) & Input.GetKey(KeyCode.G)) && waterCapacity > 0)
 		{
+			WaterCapacity();
 			transform.localScale = new Vector3(-1, 1, 1);
 			rb.velocity = new Vector3(1, 1, 0) * flySpeed;
 			animator.SetBool("AirIdle", false);
@@ -194,8 +208,9 @@ public class GeysermanMoveScript : MonoBehaviour
 			sound.SetActive(true);
 		}
 		//Input G
-		if ((!Input.GetKey(KeyCode.W) & !Input.GetKey(KeyCode.Y) & !Input.GetKey(KeyCode.S) & Input.GetKey(KeyCode.G)) | (!Input.GetKey(KeyCode.W) & Input.GetKey(KeyCode.Y) & Input.GetKey(KeyCode.S) & Input.GetKey(KeyCode.G)))
+		if ((!Input.GetKey(KeyCode.W) & !Input.GetKey(KeyCode.Y) & !Input.GetKey(KeyCode.S) & Input.GetKey(KeyCode.G)) | (!Input.GetKey(KeyCode.W) & Input.GetKey(KeyCode.Y) & Input.GetKey(KeyCode.S) & Input.GetKey(KeyCode.G)) && waterCapacity > 0)
 		{
+			WaterCapacity();
 			transform.localScale = new Vector3(1, 1, 1);
 			rb.velocity = new Vector3(-1, 1, 0) * flySpeed;
 			animator.SetBool("AirIdle", false);
@@ -214,8 +229,9 @@ public class GeysermanMoveScript : MonoBehaviour
 			sound.SetActive(true);
 		}
 		//Input W Y
-		if (Input.GetKey(KeyCode.W) & Input.GetKey(KeyCode.Y) & !(Input.GetKey(KeyCode.G) | Input.GetKey(KeyCode.S)))
+		if (Input.GetKey(KeyCode.W) & Input.GetKey(KeyCode.Y) & !(Input.GetKey(KeyCode.G) | Input.GetKey(KeyCode.S)) && waterCapacity > 0)
 		{
+			WaterCapacity();
 			if (!grounded)
 			{
 				rb.velocity = new Vector3(0, -1.5f, 0) * flySpeed;
@@ -258,8 +274,9 @@ public class GeysermanMoveScript : MonoBehaviour
 			}
 		}
 		//Input Y G
-		if (Input.GetKey(KeyCode.Y) & Input.GetKey(KeyCode.G) & !(Input.GetKey(KeyCode.S) | Input.GetKey(KeyCode.W)))
+		if (Input.GetKey(KeyCode.Y) & Input.GetKey(KeyCode.G) & !(Input.GetKey(KeyCode.S) | Input.GetKey(KeyCode.W)) && waterCapacity > 0)
 		{
+			WaterCapacity();
 			transform.localScale = new Vector3(1, 1, 1);
 			rb.velocity = new Vector3(-1.5f, 0, 0) * flySpeed;
 			animator.SetBool("AirIdle", false);
@@ -280,8 +297,9 @@ public class GeysermanMoveScript : MonoBehaviour
 			sound.SetActive(true);
 		}
 		//Input W S
-		if (Input.GetKey(KeyCode.S) & Input.GetKey(KeyCode.W) & !(Input.GetKey(KeyCode.Y) | Input.GetKey(KeyCode.G)))
+		if (Input.GetKey(KeyCode.S) & Input.GetKey(KeyCode.W) & !(Input.GetKey(KeyCode.Y) | Input.GetKey(KeyCode.G)) && waterCapacity > 0)
 		{
+			WaterCapacity();
 			transform.localScale = new Vector3(-1, 1, 1);
 			rb.velocity = new Vector3(1.5f, 0, 0) * flySpeed;
 			animator.SetBool("AirIdle", false);
@@ -302,8 +320,9 @@ public class GeysermanMoveScript : MonoBehaviour
 			sound.SetActive(true);
 		}
 		//Input S G
-		if (Input.GetKey(KeyCode.G) & Input.GetKey(KeyCode.S) & !(Input.GetKey(KeyCode.W) | Input.GetKey(KeyCode.Y)))
+		if (Input.GetKey(KeyCode.G) & Input.GetKey(KeyCode.S) & !(Input.GetKey(KeyCode.W) | Input.GetKey(KeyCode.Y)) && waterCapacity > 0)
 		{
+			WaterCapacity();
 			rb.velocity = new Vector3(0, 1.5f, 0) * flySpeed;
 			animator.SetBool("AirIdle", false);
 			animator.SetBool("UpShot", false);
@@ -325,8 +344,8 @@ public class GeysermanMoveScript : MonoBehaviour
 		//Input --
 		if (!(Input.GetKey(KeyCode.G) | Input.GetKey(KeyCode.S) | Input.GetKey(KeyCode.W) | Input.GetKey(KeyCode.Y)) | (Input.GetKey(KeyCode.G) & Input.GetKey(KeyCode.S) & Input.GetKey(KeyCode.W) & Input.GetKey(KeyCode.Y)))
 		{
-			if(!grounded)
-            {
+			if (!grounded)
+			{
 				animator.SetBool("AirIdle", true);
 				animator.SetBool("UpShot", false);
 				animator.SetBool("ArmShot", false);
@@ -341,9 +360,9 @@ public class GeysermanMoveScript : MonoBehaviour
 				sound.SetActive(false);
 			}
 			else
-            {
+			{
 				if (Input.GetKey(KeyCode.X) & !Input.GetKey(KeyCode.V))
-                {
+				{
 					transform.localScale = new Vector3(1, 1, 1);
 					rb.velocity = new Vector3(-1, 0, 0) * runSpeed;
 					animator.SetBool("AirIdle", false);
@@ -395,4 +414,44 @@ public class GeysermanMoveScript : MonoBehaviour
 			}
 		}
 	}
+
+	private void WaterCapacity()
+	{
+		waterCapacity -= neededWater;
+		JetCapacity.fillAmount = (float)waterCapacity / 100f;
+	}
+
+	private void RestoreCapacity()
+	{
+		if (waterCapacity <= 0)
+		{
+			if (isRestored)
+			{
+				waterCapacity = 100;
+				JetCapacity.fillAmount = (float)waterCapacity / 100f;
+			}
+			else if (!isRestored)
+			{
+				StartCoroutine("RestoreAttack");
+			}
+		}
+	}
+
+	IEnumerator RestoreAttack()
+	{
+		waterCapacity = 0;
+		yield return new WaitForSecondsRealtime(3.0f);
+		if (1 >= JetCapacity.fillAmount && waterCapacity == 0) 
+		{
+			JetCapacity.fillAmount += shrinkSpeed * Time.deltaTime;
+		}
+		if (JetCapacity.fillAmount >= 1) 
+		{
+			yield return new WaitForSecondsRealtime(0.1f);
+			isRestored = true;
+			yield return new WaitForSecondsRealtime(0.1f);
+			isRestored = false;
+		}
+	}
 }
+
