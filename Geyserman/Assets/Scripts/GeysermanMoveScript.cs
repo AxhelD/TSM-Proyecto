@@ -429,6 +429,7 @@ public class GeysermanMoveScript : MonoBehaviour
 			{
 				waterCapacity = 100;
 				JetCapacity.fillAmount = (float)waterCapacity / 100f;
+				StopCoroutine("RestoreAttack");
 			}
 			else if (!isRestored)
 			{
@@ -445,6 +446,7 @@ public class GeysermanMoveScript : MonoBehaviour
 		{
 			JetCapacity.fillAmount += shrinkSpeed * Time.deltaTime;
 		}
+
 		if (JetCapacity.fillAmount >= 1) 
 		{
 			yield return new WaitForSecondsRealtime(0.1f);
