@@ -26,12 +26,16 @@ public class GeysermanMoveScript : MonoBehaviour
 	public float runSpeed = 15;
 	public float shrinkSpeed;
 	public float neededWater;
+	public float toWaterBarTimerMax;
+	public float rechargeWater;
 
 	public bool grounded = true;
 	public bool airIdle = false;
 
 	private float waterCapacity = 100f;
 	private bool isRestored = false;
+	private bool waterRestore = true;
+	private float toWaterBarTimer;
 	private Rigidbody rb;
 	private Animator animator;
 	private RaycastHit raycastHit;
@@ -44,7 +48,13 @@ public class GeysermanMoveScript : MonoBehaviour
 
     void FixedUpdate()
 	{
-		RestoreCapacity();
+		toWaterBarTimer -= Time.deltaTime;
+		if (waterCapacity < 0 && waterRestore) 
+		{
+			toWaterBarTimer = toWaterBarTimerMax;
+			waterRestore = false;
+		}
+		RestoreCapacity(toWaterBarTimer);
 
 		if (Physics.Raycast(transform.position + new Vector3(0, 1, 0), -transform.up, out raycastHit, 1.1f))
 		{
@@ -421,7 +431,7 @@ public class GeysermanMoveScript : MonoBehaviour
 		JetCapacity.fillAmount = (float)waterCapacity / 100f;
 	}
 
-	private void RestoreCapacity()
+	private void RestoreCapacity(float toWaterBarTimer)
 	{
 		if (waterCapacity <= 0)
 		{
@@ -429,30 +439,28 @@ public class GeysermanMoveScript : MonoBehaviour
 			{
 				waterCapacity = 100;
 				JetCapacity.fillAmount = (float)waterCapacity / 100f;
-				StopCoroutine("RestoreAttack");
+				waterRestore = true;
+				isRestored = false;
 			}
 			else if (!isRestored)
 			{
-				StartCoroutine("RestoreAttack");
+				if (toWaterBarTimer < 0)
+				{
+					if (JetCapacity.fillAmount <= 1)
+					{
+						JetCapacity.fillAmount += shrinkSpeed * Time.deltaTime;
+					}
+				}
+				if (JetCapacity.fillAmount >= 1)
+				{
+					isRestored = true;
+				}
 			}
-		}
-	}
-
-	IEnumerator RestoreAttack()
-	{
-		waterCapacity = 0;
-		yield return new WaitForSecondsRealtime(3.0f);
-		if (1 >= JetCapacity.fillAmount && waterCapacity == 0) 
+		} else if (waterCapacity > 0 && waterCapacity < 100) 
 		{
-			JetCapacity.fillAmount += shrinkSpeed * Time.deltaTime;
-		}
-
-		if (JetCapacity.fillAmount >= 1) 
-		{
-			yield return new WaitForSecondsRealtime(0.1f);
-			isRestored = true;
-			yield return new WaitForSecondsRealtime(0.1f);
-			isRestored = false;
+			
+			waterCapacity += 10 * rechargeWater * Time.deltaTime;
+			JetCapacity.fillAmount = (float)waterCapacity / 100f;
 		}
 	}
 }
