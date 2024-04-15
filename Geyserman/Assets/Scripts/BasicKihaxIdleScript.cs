@@ -6,14 +6,16 @@ public class BasicKihaxIdleScript : MonoBehaviour
 {
     public float speedFloat;
     public float rangeMove;
-    public float maxRangeMove;
-    public float minRangeMove;
 
     private float initialPosition;
+
+    [HideInInspector]
+    public Vector2 actualPosition;
 
     void Start()
     {
         initialPosition = gameObject.transform.localPosition.y;
+        actualPosition = gameObject.transform.localPosition;
     }
 
     void FixedUpdate()
@@ -23,11 +25,9 @@ public class BasicKihaxIdleScript : MonoBehaviour
 
     void MoveKihax()
     {
-        float moveY = initialPosition + Mathf.Sin(Time.time * speedFloat) * rangeMove;
+        float moveY = initialPosition + rangeMove * Mathf.Sin(Time.time * speedFloat);
 
         gameObject.transform.localPosition = new Vector2(gameObject.transform.localPosition.x, moveY);
-
-        speedFloat = Mathf.Lerp(minRangeMove, maxRangeMove, Mathf.Abs(Mathf.Sin(Time.deltaTime * speedFloat)));
     }
 
 }

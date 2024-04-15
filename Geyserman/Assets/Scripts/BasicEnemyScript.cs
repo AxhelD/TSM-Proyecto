@@ -2,12 +2,12 @@
 
 public class BasicEnemyScript : MonoBehaviour
 {
-    public GameObject explosion;
-    private void OnTriggerEnter(Collider other)
+    public ParticleSystem explosion;
+    private void OnTriggerEnter(Collider collider)
     {
-        if (other.CompareTag("WaterJet") | other.CompareTag("Player"))
+        if (collider.CompareTag("WaterJet") | collider.CompareTag("Player"))
         {
-            Instantiate(explosion, transform.position, Quaternion.identity);
+            explosion.Play();
             Destroy(gameObject);
         }
     }
