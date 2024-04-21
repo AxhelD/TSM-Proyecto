@@ -7,7 +7,8 @@ public class ForwardLungeKihaxScript : MonoBehaviour
     public float lungeSpeed;
     public float returnSpeed;
 
-    private bool moveToPlayer = false;
+    [HideInInspector]
+    public bool moveToPlayer = false;
     private Vector2 move;
 
     private void FixedUpdate()
@@ -17,19 +18,15 @@ public class ForwardLungeKihaxScript : MonoBehaviour
         {
             gameObject.transform.position = Vector2.MoveTowards(gameObject.transform.position, move, lungeSpeed * 0.1f);
 
-            if (gameObject.transform.localPosition.x == move.x && gameObject.transform.localPosition.y == move.y) 
+            if (gameObject.transform.localPosition.x == move.x && gameObject.transform.localPosition.y == move.y)
             {
                 moveToPlayer = false;
+                GetComponent<BasicKihaxIdleScript>().initialPosition = move.y;
             }
         }
         else if (!moveToPlayer)
         {
-            gameObject.transform.position = Vector2.MoveTowards(gameObject.transform.position, GetComponent<BasicKihaxIdleScript>().actualPosition, returnSpeed * 0.1f);
-
-            if (gameObject.transform.position.x == GetComponent<BasicKihaxIdleScript>().actualPosition.x && gameObject.transform.position.y == GetComponent<BasicKihaxIdleScript>().actualPosition.y)
-            {
-                GetComponent<BasicKihaxIdleScript>().enabled = true;
-            }
+            GetComponent<BasicKihaxIdleScript>().enabled = true;
         }
     }
 

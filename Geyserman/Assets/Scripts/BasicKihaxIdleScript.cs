@@ -7,7 +7,8 @@ public class BasicKihaxIdleScript : MonoBehaviour
     public float speedFloat;
     public float rangeMove;
 
-    private float initialPosition;
+    [HideInInspector]
+    public float initialPosition;
 
     [HideInInspector]
     public Vector2 actualPosition;
@@ -23,7 +24,7 @@ public class BasicKihaxIdleScript : MonoBehaviour
         MoveKihax();
     }
 
-    void MoveKihax()
+    public void MoveKihax()
     {
         float moveY = initialPosition + rangeMove * Mathf.Sin(Time.time * speedFloat);
 
