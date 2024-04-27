@@ -6,9 +6,9 @@ public class GolemScript : MonoBehaviour
 {
     public bool startRunning;
     public bool throwing;
-    public is throwing = false;
+    public bool isThrowing = false;
     public int damageToPlayer;
-    public float distanceTolerance = 0.5f:
+    public float distanceTolerance = 0.5f;
     public float minSpeed;
     public float maxSpeed;
     public float timeToExplode = 8;
@@ -27,8 +27,8 @@ public class GolemScript : MonoBehaviour
     {
         player = GameObject.FindGameObjectWithTag("Player");
         navMeshAgent = GetComponent<NavMeshAgent>();
-        audioSource + GetComponent<AudioSource>();
-        animator = Getcomponet<Animator>();
+        audioSource = GetComponent<AudioSource>();
+        animator = GetComponent<Animator>();
         navMeshAgent.speed = Random.Range(minSpeed, maxSpeed);
     }
 

@@ -14,7 +14,6 @@ public class TrajectoryKihaxFollowScript : MonoBehaviour
         if (gameObject.transform.position != points[index + 1].transform.position)
         {
             PointPathSequence(points[index + 1]);
-            print(index);
         }
         
         if (gameObject.transform.position == points[index + 1].transform.position)

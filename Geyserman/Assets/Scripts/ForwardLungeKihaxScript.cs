@@ -32,8 +32,11 @@ public class ForwardLungeKihaxScript : MonoBehaviour
 
     private void OnTriggerEnter(Collider other) 
     {
-        moveToPlayer = true;
-        GetComponent<BasicKihaxIdleScript>().enabled = false;
-        move =  other.gameObject.GetComponent<Collider>().ClosestPointOnBounds(transform.position);
+        if(other.CompareTag("Player")) 
+        {
+            moveToPlayer = true;
+            GetComponent<BasicKihaxIdleScript>().enabled = false;
+            move = other.gameObject.GetComponent<Collider>().ClosestPointOnBounds(transform.position);
+        }
     }
 }

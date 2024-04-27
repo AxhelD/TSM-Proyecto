@@ -53,7 +53,7 @@ public class GeysermanProgressScript : MonoBehaviour
     void distanceToPlayer(Image siteFromMove, Image siteToMove, GameObject distanceFromSite, GameObject distanceToSite)
     {
         distanceToPoint = Vector3.Distance(distanceFromSite.transform.localPosition, distanceToSite.transform.localPosition);
-        distanceToTarget = Mathf.Abs((distanceToSite.transform.localPosition - player.transform.localPosition).x);
+        distanceToTarget = Mathf.Abs((player.transform.localPosition - distanceToSite.transform.localPosition).x);
         distanceToIcon = Vector3.Distance(siteFromMove.rectTransform.localPosition, siteToMove.rectTransform.localPosition);
 
         currentDistance = Map(distanceToTarget, distanceToPoint, 0, distanceToIcon, 0);
