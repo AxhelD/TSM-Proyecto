@@ -108,7 +108,7 @@ Material:
     - _ColorAddSubDiff: {r: 1, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 1.7207954, g: 1.7207954, b: 1.7207954, a: 1}
     - _SoftParticleFadeParams: {r: 0, g: 2, b: 0, a: 0}
---- !u!114 &8327860553938401247
+--- !u!114 &5536385657938880944
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}

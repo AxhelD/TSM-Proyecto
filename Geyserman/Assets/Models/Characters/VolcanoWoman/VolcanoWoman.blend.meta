@@ -38,7 +38,8 @@ ModelImporter:
     resampleCurves: 1
     optimizeGameObjects: 0
     motionNodeName: 
-    rigImportErrors: 
+    rigImportErrors: "Invalid Avatar Rig Configuration. Missing or invalid transform:\n\tRequired
+      human bone 'Head' not found\n"
     rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
@@ -46,7 +47,7 @@ ModelImporter:
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
     importConstraints: 0
-    animationCompression: 1
+    animationCompression: 3
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
@@ -247,7 +248,7 @@ ModelImporter:
     keepQuads: 0
     weldVertices: 1
     preserveHierarchy: 0
-    skinWeightsMode: 0
+    skinWeightsMode: 1
     maxBonesPerVertex: 4
     minBoneWeight: 0.001
     meshOptimizationFlags: -1
@@ -270,7 +271,97 @@ ModelImporter:
   humanDescription:
     serializedVersion: 3
     human: []
-    skeleton: []
+    skeleton:
+    - name: VolcanoWoman(Clone)
+      parentName: 
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: VolcanoWoMalla
+      parentName: VolcanoWoman(Clone)
+      position: {x: -0.15023445, y: 13.621345, z: 0.39150387}
+      rotation: {x: 0.5, y: 0.49999997, z: 0.5, w: -0.5}
+      scale: {x: 3.2987795, y: 3.2987795, z: 3.2987795}
+    - name: VolcanoWoman Esqueleto
+      parentName: VolcanoWoman(Clone)
+      position: {x: -0.009065792, y: 7.0403233, z: 1.7235441}
+      rotation: {x: 0.5, y: 0.49999997, z: 0.5, w: -0.5}
+      scale: {x: 2.0315244, y: 2.0315244, z: 2.0315244}
+    - name: Centro
+      parentName: VolcanoWoman Esqueleto
+      position: {x: -0.47448015, y: -0.0000000015037562, z: -0.46173036}
+      rotation: {x: -0.7070461, y: -0.009261638, z: 0.009262323, w: -0.70704615}
+      scale: {x: 1.0000001, y: 0.9999999, z: 1}
+    - name: Cabeza
+      parentName: Centro
+      position: {x: -3.7747583e-14, y: 2.897853, z: -2.4868996e-14}
+      rotation: {x: 0.000000029802326, y: 0.00000046473, z: -0.017294062, w: 0.99985045}
+      scale: {x: 0.9999999, y: 1, z: 1.0000001}
+    - name: Cabeza_end
+      parentName: Cabeza
+      position: {x: -0, y: 2.0478182, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: L.Brazo
+      parentName: VolcanoWoman Esqueleto
+      position: {x: 0.047761753, y: -1.2037976, z: 1.5552943}
+      rotation: {x: -0.98669136, y: -0.14336945, z: -0.04787551, w: 0.0599443}
+      scale: {x: 0.9999999, y: 1, z: 1.0000001}
+    - name: L.Antebrazo
+      parentName: L.Brazo
+      position: {x: -0, y: 1.0348148, z: 0.000000014901161}
+      rotation: {x: 0.05361753, y: 0.022106536, z: -0.07914116, w: 0.99517494}
+      scale: {x: 1, y: 1.0000001, z: 0.9999999}
+    - name: L.Antebrazo_end
+      parentName: L.Antebrazo
+      position: {x: -0, y: 1.5238185, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: L.Pierna
+      parentName: VolcanoWoman Esqueleto
+      position: {x: -0.83373135, y: -0.54283524, z: -0.08103728}
+      rotation: {x: -0.7321504, y: -0.09632913, z: -0.05735297, w: 0.6718536}
+      scale: {x: 1.0000001, y: 1.0000005, z: 1}
+    - name: L.Pantorrilla
+      parentName: L.Pierna
+      position: {x: -0.000000014901161, y: 1.8613336, z: -0.00000018626451}
+      rotation: {x: 0.06301587, y: -0.0184734, z: 0.32718936, w: 0.9426744}
+      scale: {x: 1.0000006, y: 1.0000007, z: 1.0000001}
+    - name: L.Pantorrilla_end
+      parentName: L.Pantorrilla
+      position: {x: -0, y: 1.3173513, z: 0}
+      rotation: {x: -0.003455679, y: 0.00047200907, z: -0.05346601, w: 0.9985636}
+      scale: {x: 1, y: 1, z: 1}
+    - name: R.Brazo
+      parentName: VolcanoWoman Esqueleto
+      position: {x: 0.020213798, y: 1.2127229, z: 1.5655358}
+      rotation: {x: -0.059944455, y: -0.047876228, z: -0.14336964, w: 0.9866913}
+      scale: {x: 0.99999976, y: 1, z: 1.0000002}
+    - name: R.Antebrazo
+      parentName: R.Brazo
+      position: {x: 0.00000013411045, y: 1.0348147, z: -0.00000014901161}
+      rotation: {x: -0.05361763, y: -0.02210559, z: -0.079141006, w: 0.99517494}
+      scale: {x: 1.0000004, y: 1.0000001, z: 1.0000001}
+    - name: R.Antebrazo_end
+      parentName: R.Antebrazo
+      position: {x: -0, y: 1.5238185, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: R.Pierna
+      parentName: VolcanoWoman Esqueleto
+      position: {x: -0.8630674, y: 0.5517605, z: -0.08282447}
+      rotation: {x: -0.6718534, y: -0.0573527, z: -0.09632929, w: 0.7321505}
+      scale: {x: 1.0000002, y: 1, z: 0.9999999}
+    - name: R.Pantorrilla
+      parentName: R.Pierna
+      position: {x: -0.000000014901161, y: 1.8613335, z: -0.000000067055225}
+      rotation: {x: -0.06301593, y: 0.01847312, z: 0.32718894, w: 0.94267446}
+      scale: {x: 1.0000001, y: 0.99999964, z: 0.9999996}
+    - name: R.Pantorrilla_end
+      parentName: R.Pantorrilla
+      position: {x: -0, y: 1.3173513, z: 0}
+      rotation: {x: 0.0034554224, y: -0.00047180423, z: -0.053465754, w: 0.99856365}
+      scale: {x: 1, y: 1, z: 1}
     armTwist: 0.5
     foreArmTwist: 0.5
     upperLegTwist: 0.5
@@ -281,7 +372,7 @@ ModelImporter:
     globalScale: 1
     rootMotionBoneName: 
     hasTranslationDoF: 0
-    hasExtraRoot: 0
+    hasExtraRoot: 1
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   autoGenerateAvatarMappingIfUnspecified: 1
