@@ -262,8 +262,8 @@ public class GeysermanMovePeripheralScript : MonoBehaviour
 			waterShot.GetComponent<Rigidbody>().velocity = new Vector3(1, -1, 0) * flySpeed;
 			sound.SetActive(true);
 		}
-		//Input W Y
-		if (left2 == 0 & right2 == 0 & !(right1 == 1 | left1 == 1) && waterCapacity > 0)
+		//Input W Y, cambiado
+		if (right2 == 0 & left2 == 0 & !(left1 == 0 | right1 == 0) && waterCapacity > 0)
 		{
 			WaterCapacity();
 			SerialManagerScript.SendInfo("c");
@@ -357,7 +357,7 @@ public class GeysermanMovePeripheralScript : MonoBehaviour
 			sound.SetActive(true);
 		}
 		//Input S G
-		if (right1 == 0 & left1 == 0 & !(left2 == 0 | right2 == 0) && waterCapacity > 0)
+		if (left1 == 0 & right1 == 0 & !(right2 == 0 | left2 == 0) && waterCapacity > 0)
 		{
 			WaterCapacity();
 			SerialManagerScript.SendInfo("c");
