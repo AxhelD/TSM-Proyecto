@@ -9,12 +9,15 @@ public class GeysermanProgressScript : MonoBehaviour
     public Image originSite;
     public Image firstSite;
     public Image secondSite;
-    public Image bossArea;
+    public Image thirdSite;
 
-    public GameObject originSiteCollider;
-    public GameObject firstSiteCollider;
-    public GameObject secondSiteCollider;
-    public GameObject bossSiteCollider;
+    public float originSiteEnd;
+    public float firstSiteBegining;
+    public float firstSiteEnd;
+    public float secondSiteBegining;
+    public float secondSiteEnd;
+    public float thirdSiteBegining;
+
     public GameObject player;
 
     private float distanceToTarget;
@@ -29,39 +32,30 @@ public class GeysermanProgressScript : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (player.transform.position.x <= firstSiteCollider.transform.position.x)
+        if (player.transform.position.x > originSiteEnd && player.transform.position.x < firstSiteBegining)
         {
-            distanceToPlayer(originSite, firstSite, originSiteCollider, firstSiteCollider);
+            distanceToPlayer(originSite, firstSite, originSiteEnd, firstSiteBegining);
         }
-        else if (player.transform.position.x >= firstSiteCollider.transform.position.x && player.transform.position.x <= secondSiteCollider.transform.position.x)
+        else if (player.transform.position.x > firstSiteEnd && player.transform.position.x < secondSiteBegining)
         {
-            distanceToPlayer(firstSite, secondSite, firstSiteCollider, secondSiteCollider);
-            firstSite.enabled = false;
+            distanceToPlayer(firstSite, secondSite, firstSiteEnd, secondSiteBegining);
         }
-        else if (player.transform.position.x >= secondSiteCollider.transform.position.x && player.transform.position.x <= bossSiteCollider.transform.position.x)
+        else if (player.transform.position.x > secondSiteEnd && player.transform.position.x < thirdSiteBegining)
         {
-            distanceToPlayer(secondSite, bossArea, secondSiteCollider, bossSiteCollider);
-            secondSite.enabled = false;
+            distanceToPlayer(secondSite, thirdSite, secondSiteEnd, thirdSiteBegining);
         }
-        else if (player.transform.position.x >= bossSiteCollider.transform.position.x) 
-        {
-            bossArea.enabled = false;
-        }
-      
     }
 
-    void distanceToPlayer(Image siteFromMove, Image siteToMove, GameObject distanceFromSite, GameObject distanceToSite)
+    void distanceToPlayer(Image siteFromMove, Image siteToMove, float distanceFromSite, float distanceToSite)
     {
-        distanceToPoint = Vector3.Distance(distanceFromSite.transform.localPosition, distanceToSite.transform.localPosition);
-        distanceToTarget = Mathf.Abs((player.transform.localPosition - distanceToSite.transform.localPosition).x);
+        distanceToPoint = Mathf.Abs(distanceToSite - distanceFromSite);
+        distanceToTarget = Mathf.Abs(player.transform.localPosition.x - distanceToSite);
         distanceToIcon = Vector3.Distance(siteFromMove.rectTransform.localPosition, siteToMove.rectTransform.localPosition);
 
         currentDistance = Map(distanceToTarget, distanceToPoint, 0, distanceToIcon, 0);
+        
+        iconBarProgress.rectTransform.localPosition = new Vector2(siteToMove.rectTransform.localPosition.x - currentDistance,  iconBarProgress.rectTransform.localPosition.y);
 
-        if(player.transform.localPosition.x <= distanceToSite.transform.localPosition.x && player.transform.localPosition.x > distanceFromSite.transform.localPosition.x) 
-        {
-            iconBarProgress.rectTransform.localPosition = new Vector2(siteToMove.rectTransform.localPosition.x - currentDistance,  iconBarProgress.rectTransform.localPosition.y);
-        }
     }
 
     static public float Map(float value, float istart, float istop, float ostart, float ostop)
