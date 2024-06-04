@@ -23,11 +23,13 @@ public class RandomShitaiAttackScript : MonoBehaviour
     private float initialVerticalPosition;
     private float interpolateAmount;
     private Quaternion prevRot;
+    private float timer;
+    private float timerAux;
 
     private Vector3 posx;
-    private bool proof = true;
+    //private bool proof = true;
     private bool hasWalking = false;
-    private bool hasPass = false;
+    private bool hasPass = true;
     private bool turnRight = false;
     private bool turnLeft = false;
     private bool isNegative = false;
@@ -62,6 +64,8 @@ public class RandomShitaiAttackScript : MonoBehaviour
                 proof = false;
             }*/
 
+            //print(time);
+
             if (numAttack == 0) 
             {
                 IdleShitai();
@@ -85,6 +89,15 @@ public class RandomShitaiAttackScript : MonoBehaviour
     {
         distanceToPlayer = (player.transform.localPosition - gameObject.transform.localPosition).x - 23.46185f;
 
+        if (gameObject.transform.position.x > player.transform.position.x)
+        {
+            gameObject.transform.rotation = Quaternion.Euler(0, -90, 0);
+        }
+        else if (gameObject.transform.position.x > player.transform.position.x)
+        {
+            gameObject.transform.rotation = Quaternion.Euler(0, 90, 0);
+        }
+
         if (!hasWalking) 
         {
             StartCoroutine(DelayWalkShitai());
@@ -101,13 +114,8 @@ public class RandomShitaiAttackScript : MonoBehaviour
         }
         else if (distanceToPlayer < 16 || distanceToPlayer > -16) 
         {
-            animator.SetBool("Walk", false);
-            animator.SetBool("Idle", true);
-            animator.SetBool("Upshot", false);
-            animator.SetBool("Sideshot", false);
-            animator.SetBool("Downshot", false);
-        }
-        
+            StartCoroutine(NotWalkingShitai());
+        }       
     }
 
     IEnumerator DelayWalkShitai()
@@ -145,6 +153,27 @@ public class RandomShitaiAttackScript : MonoBehaviour
 
             numAttack = 1;
         }
+
+        hasWalking = false;
+    }
+
+    IEnumerator NotWalkingShitai()
+    {
+        animator.SetBool("Walk", false);
+        animator.SetBool("Idle", true);
+        animator.SetBool("Upshot", false);
+        animator.SetBool("Sideshot", false);
+        animator.SetBool("Downshot", false);
+
+        yield return new WaitForSeconds(5f);
+
+        if (numAttack == 0)
+        {
+            //numAttack = Random.Range(1, 4);
+
+            numAttack = 1;
+        }
+
         hasWalking = false;
     }
 
@@ -206,10 +235,11 @@ public class RandomShitaiAttackScript : MonoBehaviour
 
     IEnumerator AttackRainShitai()
     {
-
-        if (hasPass) 
+        if (hasPass && timer < 4 && timer >= 0) 
         {
             AttackTowardsPlayer(90, 90, 270, 90);
+
+            timer += Time.deltaTime;
 
             animator.SetBool("Walk", false);
             animator.SetBool("Idle", false);
@@ -218,24 +248,32 @@ public class RandomShitaiAttackScript : MonoBehaviour
             animator.SetBool("Downshot", false);
         }
 
-        if (gameObject.transform.eulerAngles.y == 0) 
+        if (timer > 4) 
         {
             hasPass = false;
+            timer = -1;
         }
 
         yield return new WaitForSeconds(4f);
 
-        if (!hasPass) 
+        if (timer == -1 && !hasPass) 
         {
-            AttackTowardsPlayer(180, -90, 360, -90);
+            AttackTowardsPlayer(180, -90, 0, -90);
+
+            animator.SetBool("Walk", false);
+            animator.SetBool("Idle", true);
+            animator.SetBool("Upshot", false);
+            animator.SetBool("Sideshot", false);
+            animator.SetBool("Downshot", false);
         }
 
-        yield return new WaitForSeconds(4f);
+        yield return new WaitForSeconds(3f);
 
-        if (numAttack == 1) 
+        if (numAttack == 1 && !hasPass) 
         {
             numAttack = 0;
             hasPass = true;
+            timer = 0;
         }
     }
 
@@ -243,18 +281,25 @@ public class RandomShitaiAttackScript : MonoBehaviour
     {
         if (gameObject.transform.position.x < player.transform.position.x)
         {
-            if (gameObject.transform.eulerAngles.y == actualRightAngle)
+            int rightAngle = rightAmountAngle;
+
+            if (gameObject.transform.eulerAngles.y == actualRightAngle || (actualRightAngle > gameObject.transform.eulerAngles.y - 3 && actualRightAngle < gameObject.transform.eulerAngles.y + 3))
             {
                 turnRight = true;
             }
 
             if (rightAmountAngle < 0)
             {
-                rightAmountAngle = Mathf.Abs(rightAmountAngle);
+                rightAngle = Mathf.Abs(rightAmountAngle);
                 isNegative = true;
             }
 
-            if (time <= rightAmountAngle && turnRight)
+            if (turnRight && timerAux < 4 && timerAux >= 0) 
+            {
+                timerAux += Time.deltaTime;
+            }
+
+            if (time <= rightAngle && turnRight)
             {
                 if (!isNegative)
                 {
@@ -267,30 +312,60 @@ public class RandomShitaiAttackScript : MonoBehaviour
                 
                 time += Time.deltaTime * 250;
             }
-            else if (time > rightAmountAngle && gameObject.transform.eulerAngles.y == (actualRightAngle + rightAmountAngle))
+            else if (time > rightAngle /*&& gameObject.transform.eulerAngles.y == (actualRightAngle + rightAmountAngle)*/ && timerAux > 4)
             {
                 time = 0;
+                timerAux = 0;
                 turnRight = false;
-                isNegative = false;
+                if (isNegative) 
+                {
+                    isNegative = false;
+                }
             }
-        }
-
-        if (gameObject.transform.position.x > player.transform.position.x)
+        } 
+        else if (gameObject.transform.position.x > player.transform.position.x)
         {
-            if (gameObject.transform.eulerAngles.y == actualLeftAngle)
+            int leftAngle = leftAmountAngle;
+
+            if (gameObject.transform.eulerAngles.y == actualLeftAngle || (actualLeftAngle > gameObject.transform.eulerAngles.y - 3 && actualLeftAngle < gameObject.transform.eulerAngles.y + 3))
             {
                 turnLeft = true;
             }
 
-            if (time <= leftAmountAngle && turnLeft)
+            if (leftAmountAngle < 0)
             {
-                gameObject.transform.rotation = Quaternion.Euler(0, actualLeftAngle + time, 0);
+                leftAngle = Mathf.Abs(leftAmountAngle);
+                isNegative = true;
+            }
+
+            if (turnLeft && timerAux < 4 && timerAux >= 0) 
+            { 
+                timerAux += Time.deltaTime;
+            }
+
+            if (time <= leftAngle && turnLeft)
+            {
+                if (!isNegative)
+                {
+                    gameObject.transform.rotation = Quaternion.Euler(0, actualLeftAngle + time, 0);
+                }
+                else if (isNegative)
+                {
+                    gameObject.transform.rotation = Quaternion.Euler(0, actualLeftAngle - time, 0);
+                }
+
                 time += Time.deltaTime * 250;
-            } 
-            else if (time > leftAmountAngle && gameObject.transform.eulerAngles.y == (actualLeftAngle + leftAmountAngle))
+            }
+            else if (time > leftAngle && timerAux > 4)  
             {
+                print("Go");
                 time = 0;
+                timerAux = -1;
                 turnLeft = false;
+                if (isNegative)
+                {
+                    isNegative = false;
+                }
             }
         }
     }
