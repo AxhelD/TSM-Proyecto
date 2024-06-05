@@ -15,7 +15,7 @@ public class ForwardLungeKihaxScript : MonoBehaviour
     {
         vector = player.transform.position - transform.position;
 
-        if (vector.magnitude < 15)
+        if (vector.magnitude < 20)
         {
             GetComponent<BasicKihaxIdleScript>().enabled = false;
             transform.Translate(vector.normalized * speed);
