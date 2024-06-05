@@ -19,6 +19,7 @@ public class GolemScript : MonoBehaviour
     public float timeToExplode = 5;
     public GameObject spawnPoint;
     public GameObject particlePrefab;
+    //private float shootAngle;
 
     public AudioClip[] throwingClip;
     public AudioClip[] dieClip;
@@ -69,6 +70,7 @@ public class GolemScript : MonoBehaviour
         if (attack && health > 0) //Estado de atacar
         {
             Attack();
+            return;
         }
     }
 
@@ -83,6 +85,7 @@ public class GolemScript : MonoBehaviour
         navMeshAgent.isStopped = true;
         animator.SetBool("Attack", true);
         animator.SetBool("Run", false);
+
         targetPosition = player.transform.position - transform.position;
         Quaternion newRotation = Quaternion.LookRotation(targetPosition);
         transform.rotation = Quaternion.Lerp(transform.rotation, newRotation, rotationSpeed * Time.deltaTime);
@@ -140,8 +143,8 @@ public class GolemScript : MonoBehaviour
 
     public void Shoot()
     {
-        int attackClipIndex = Random.Range(0, attackClip.Length - 1);
-        audioSource.PlayOneShot(attackClip[attackClipIndex]);
+        //int attackClipIndex = Random.Range(0, attackClip.Length - 1);
+        //audioSource.PlayOneShot(attackClip[attackClipIndex]);
         Vector3 playerPositionOnGround = new Vector3(player.transform.position.x, 0, player.transform.position.z);
         Vector3 enemyPositionOnGround = new Vector3(spawnPoint.transform.position.x, 0, spawnPoint.transform.position.z);
         Vector3 playerPositionOnVerical = new Vector3(0, player.transform.position.y, 0);
@@ -182,5 +185,6 @@ public class GolemScript : MonoBehaviour
         shootedParticle = Instantiate(particlePrefab, spawnPoint.transform.position, Quaternion.identity);
         spawnPoint.transform.localRotation = Quaternion.Euler(new Vector3(angleA * Mathf.Rad2Deg, 0, 0));
         shootedParticle.GetComponent<Rigidbody>().velocity = spawnPoint.transform.forward * particleSpeed;
+        return;
     }
 }
