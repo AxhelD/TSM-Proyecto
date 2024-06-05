@@ -4,39 +4,26 @@ using UnityEngine;
 
 public class ForwardLungeKihaxScript : MonoBehaviour
 {
-    public float lungeSpeed;
-    public float returnSpeed;
+    public float speed;
 
-    [HideInInspector]
-    public bool moveToPlayer = false;
-    private Vector2 move;
+    public GameObject player;
+
+    private Vector3 vector;
+
 
     private void FixedUpdate()
     {
+        vector = player.transform.position - transform.position;
 
-        if (moveToPlayer)
+        if (vector.magnitude < 15)
         {
-            gameObject.transform.position = Vector2.MoveTowards(gameObject.transform.position, move, lungeSpeed * 0.1f);
-
-            if (gameObject.transform.localPosition.x == move.x && gameObject.transform.localPosition.y == move.y)
-            {
-                moveToPlayer = false;
-                GetComponent<BasicKihaxIdleScript>().initialPosition = move.y;
-            }
+            GetComponent<BasicKihaxIdleScript>().enabled = false;
+            transform.Translate(vector.normalized * speed);
+            GetComponent<BasicKihaxIdleScript>().initialPosition = transform.position.y;
         }
-        else if (!moveToPlayer)
+        else
         {
             GetComponent<BasicKihaxIdleScript>().enabled = true;
-        }
-    }
-
-    private void OnTriggerEnter(Collider other) 
-    {
-        if(other.CompareTag("Player")) 
-        {
-            moveToPlayer = true;
-            GetComponent<BasicKihaxIdleScript>().enabled = false;
-            move = other.gameObject.GetComponent<Collider>().ClosestPointOnBounds(transform.position);
         }
     }
 }
