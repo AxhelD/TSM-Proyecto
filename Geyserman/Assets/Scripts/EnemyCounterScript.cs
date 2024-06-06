@@ -28,8 +28,8 @@ public class EnemyCounterScript : MonoBehaviour
         enemyCounter = 0;
         actualSection = 1;
         counterText.text = "Sección " + actualSection.ToString() + ": " + enemyCounter.ToString() + "/" + primeraSeccion.Length.ToString();
-        missionText.text = "Misión 1:";
-        toDoText.text = "Acaba con todos los enemigos Kihax de las secciones y lugares!";
+        missionText.text = "Misión:";
+        toDoText.text = "Acaba con todos los enemigos en las 3 ubicaciones";
         volcanoWoman.SetActive(false);
     }
 
@@ -103,8 +103,8 @@ public class EnemyCounterScript : MonoBehaviour
         }
         else if (enemyCounter == estadioSeccion.Length && actualSection == 6)
         {
-            missionText.text = "Misión 2:";
-            toDoText.text = "Derrota a Volcano Woman!";
+            missionText.text = "Misión:";
+            toDoText.text = "Derrota a Volcano Woman";
             volcanoWoman.SetActive(true);
             enemyCounter = 0;
             actualSection += 1;

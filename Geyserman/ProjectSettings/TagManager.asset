@@ -8,6 +8,7 @@ TagManager:
   - WaterJet
   - Enemy
   - EnemyColliderTag
+  - Shitai
   layers:
   - Default
   - TransparentFX

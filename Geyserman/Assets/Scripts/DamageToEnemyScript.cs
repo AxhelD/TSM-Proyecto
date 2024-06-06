@@ -8,7 +8,7 @@ public class DamageToEnemyScript : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Enemy")) 
+        if (other.gameObject.CompareTag("Shitai")) 
         {
             other.gameObject.GetComponent<ShitaiHealthScript>().DamageToEnemy(damageToEnemy);
         }
