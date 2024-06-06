@@ -9,6 +9,7 @@ public class GolemScript : MonoBehaviour
     public bool attack;
     public int damageToPlayer;
     public int health;
+    public ParticleSystem explosion;
     //public bool isGrounded;
 
     public float rotationSpeed;
@@ -107,6 +108,8 @@ public class GolemScript : MonoBehaviour
         int dieClipIndex = Random.Range(0, dieClip.Length);
         audioSource.PlayOneShot(dieClip[dieClipIndex]);
         hasDied = true;
+        explosion.Play();
+        Destroy(gameObject, explosion.main.duration);
     }
 
     public void AttackStopped()
@@ -123,6 +126,15 @@ public class GolemScript : MonoBehaviour
     {
         int stepClipIndex = Random.Range(0, stepClip.Length);
         audioSource.PlayOneShot(stepClip[stepClipIndex]);
+    }
+
+    public void TakeDamage(int damage)
+    {
+        health -= damage;
+        if(health <= 0)
+        {
+            Die();
+        }
     }
 
     private void OnTriggerEnter(Collider other)
