@@ -100,14 +100,16 @@ public class GolemScript : MonoBehaviour
         navMeshAgent.isStopped = false;
     }
 
-    private void Die()
+    public void Die()
     {
         animator.SetBool("Run", false);
         animator.SetBool("Attack", false);
         animator.SetBool("Dead", true);
-        int dieClipIndex = Random.Range(0, dieClip.Length);
-        audioSource.PlayOneShot(dieClip[dieClipIndex]);
+        //int dieClipIndex = Random.Range(0, dieClip.Length);
+        //audioSource.PlayOneShot(dieClip[dieClipIndex]);
         hasDied = true;
+
+        Debug.Log("El enemigo ha sido destruído por GolemScript");
         explosion.Play();
         Destroy(gameObject, explosion.main.duration);
     }
@@ -128,9 +130,10 @@ public class GolemScript : MonoBehaviour
         audioSource.PlayOneShot(stepClip[stepClipIndex]);
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(int amount)
     {
-        health -= damage;
+        health -= amount;
+        Debug.Log($"El enemigo recibió daño: {amount}. Vida restante: {health}");
         if(health <= 0)
         {
             Die();
