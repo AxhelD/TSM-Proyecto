@@ -4,15 +4,31 @@ using UnityEngine;
 
 public class RandomShitaiAttackScript : MonoBehaviour
 {
-    public GameObject[] referencePoints;
-    public GameObject[] anchorPoints;
+    public GameObject[] referencePoints1;
+    public GameObject[] anchorPoints1;
+
+    public GameObject[] referencePoints2;
+    public GameObject[] anchorPoints2;
+
+    public GameObject referenceChoicePath;
+
     public GameObject player;
+
     public ParticleSystem leftFlyFire;
     public ParticleSystem rightFlyFire;
+    public ParticleSystem beamFire;
+    public ParticleSystem headFire;
+    public ParticleSystem leftRainFire;
+    public ParticleSystem rightRainFire;
+
     public bool hasArrived = false;
 
+    [HideInInspector]
+
+    public int numAttack;
+
     private Animator animator;
-    private int numAttack;
+    private int numPath = 0;
     private int index;
     private float angle;
     private float rotate;
@@ -66,25 +82,38 @@ public class RandomShitaiAttackScript : MonoBehaviour
 
             //print(time);
 
-            if (numAttack == 0) 
+            if (numAttack == 0)
             {
                 IdleShitai();
             }
             else if (numAttack == 1)
             {
                 MagmaBeamAttack();
+                angle = 0;
+                hasArrived = false;
+                up = 0;
+                interpolateAmount = 0;
             }
             else if (numAttack == 2)
             {
                 MagmaRainAttack();
+                angle = 0;
+                hasArrived = false;
+                up = 0;
+                interpolateAmount = 0;
             }
-            else if (numAttack == 3) 
+            else if (numAttack == 3)
             {
                 FlyAndAttack();
+            }
+            else if (numAttack == 5) 
+            {
+                DeathDrown();
             }
         }
     }
 
+    //Ataque 0 (Idle):
     void IdleShitai()
     {
         distanceToPlayer = (player.transform.localPosition - gameObject.transform.localPosition).x - 23.46185f;
@@ -145,13 +174,13 @@ public class RandomShitaiAttackScript : MonoBehaviour
 
         gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, posx, movementFrame);
 
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(3f);
 
         if (numAttack == 0)
         {
-            //numAttack = Random.Range(1, 4);
+            numAttack = Random.Range(1, 4);
 
-            numAttack = 1;
+            //numAttack = 1;
         }
 
         hasWalking = false;
@@ -165,13 +194,13 @@ public class RandomShitaiAttackScript : MonoBehaviour
         animator.SetBool("Sideshot", false);
         animator.SetBool("Downshot", false);
 
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(3f);
 
         if (numAttack == 0)
         {
-            //numAttack = Random.Range(1, 4);
+            numAttack = Random.Range(1, 4);
 
-            numAttack = 1;
+            //numAttack = 1;
         }
 
         hasWalking = false;
@@ -219,15 +248,7 @@ public class RandomShitaiAttackScript : MonoBehaviour
         }
     }
 
-    void MagmaRainAttack()
-    {
-        animator.SetBool("Walk", false);
-        animator.SetBool("Idle", false);
-        animator.SetBool("Upshot", true);
-        animator.SetBool("Sideshot", false);
-        animator.SetBool("Downshot", false);
-    }
-
+    //Ataque 1 (Rayo de lava):
     void MagmaBeamAttack()
     {
         StartCoroutine(AttackRainShitai());
@@ -235,7 +256,7 @@ public class RandomShitaiAttackScript : MonoBehaviour
 
     IEnumerator AttackRainShitai()
     {
-        if (hasPass && timer < 4 && timer >= 0) 
+        if (hasPass && timer < 3 && timer >= 0)
         {
             AttackTowardsPlayer(90, 90, 270, 90);
 
@@ -246,19 +267,25 @@ public class RandomShitaiAttackScript : MonoBehaviour
             animator.SetBool("Upshot", false);
             animator.SetBool("Sideshot", true);
             animator.SetBool("Downshot", false);
+
+            beamFire.Play();
+            headFire.Play();
         }
 
-        if (timer > 4) 
+        if (timer > 3)
         {
             hasPass = false;
             timer = -1;
         }
 
-        yield return new WaitForSeconds(4f);
+        yield return new WaitForSeconds(3f);
 
-        if (timer == -1 && !hasPass) 
+        if (timer == -1 && !hasPass)
         {
             AttackTowardsPlayer(180, -90, 0, -90);
+
+            beamFire.Stop();
+            headFire.Stop();
 
             animator.SetBool("Walk", false);
             animator.SetBool("Idle", true);
@@ -267,9 +294,9 @@ public class RandomShitaiAttackScript : MonoBehaviour
             animator.SetBool("Downshot", false);
         }
 
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(2f);
 
-        if (numAttack == 1 && !hasPass) 
+        if (numAttack == 1 && !hasPass)
         {
             numAttack = 0;
             hasPass = true;
@@ -294,7 +321,7 @@ public class RandomShitaiAttackScript : MonoBehaviour
                 isNegative = true;
             }
 
-            if (turnRight && timerAux < 4 && timerAux >= 0) 
+            if (turnRight && timerAux < 3 && timerAux >= 0)
             {
                 timerAux += Time.deltaTime;
             }
@@ -305,24 +332,25 @@ public class RandomShitaiAttackScript : MonoBehaviour
                 {
                     gameObject.transform.rotation = Quaternion.Euler(0, actualRightAngle + time, 0);
                 }
-                else if (isNegative) 
+                else if (isNegative)
                 {
                     gameObject.transform.rotation = Quaternion.Euler(0, actualRightAngle - time, 0);
                 }
-                
+
                 time += Time.deltaTime * 250;
             }
-            else if (time > rightAngle /*&& gameObject.transform.eulerAngles.y == (actualRightAngle + rightAmountAngle)*/ && timerAux > 4)
+            else if (time > rightAngle /*&& gameObject.transform.eulerAngles.y == (actualRightAngle + rightAmountAngle)*/ && timerAux > 3)
             {
                 time = 0;
                 timerAux = 0;
                 turnRight = false;
-                if (isNegative) 
+                if (isNegative)
                 {
                     isNegative = false;
                 }
+               
             }
-        } 
+        }
         else if (gameObject.transform.position.x > player.transform.position.x)
         {
             int leftAngle = leftAmountAngle;
@@ -338,8 +366,8 @@ public class RandomShitaiAttackScript : MonoBehaviour
                 isNegative = true;
             }
 
-            if (turnLeft && timerAux < 4 && timerAux >= 0) 
-            { 
+            if (turnLeft && timerAux < 3 && timerAux >= 0)
+            {
                 timerAux += Time.deltaTime;
             }
 
@@ -356,9 +384,9 @@ public class RandomShitaiAttackScript : MonoBehaviour
 
                 time += Time.deltaTime * 250;
             }
-            else if (time > leftAngle && timerAux > 4)  
+            else if (time > leftAngle && timerAux > 3)
             {
-                print("Go");
+                //print("Go");
                 time = 0;
                 timerAux = -1;
                 turnLeft = false;
@@ -366,10 +394,46 @@ public class RandomShitaiAttackScript : MonoBehaviour
                 {
                     isNegative = false;
                 }
+                
             }
         }
     }
 
+    //Ataque 2 (Lluvia de lava):
+    void MagmaRainAttack()
+    {
+        timer += Time.deltaTime;
+
+        if (timer < 3 && timer > 0)
+        {
+            animator.SetBool("Walk", false);
+            animator.SetBool("Idle", false);
+            animator.SetBool("Upshot", true);
+            animator.SetBool("Sideshot", false);
+            animator.SetBool("Downshot", false);
+
+            leftRainFire.Play();
+            rightRainFire.Play();
+        }
+        else if (timer > 3) 
+        {
+            timer = -1;
+        }
+
+        if (timer > 2) 
+        {
+            leftRainFire.Stop();
+            rightRainFire.Stop();
+        }
+
+        if (timer == -1) 
+        {
+            numAttack = 0;
+            timer = 0;
+        }
+    }
+
+    //Ataque 3 (Vuelo):
 
     void FlyAndAttack()
     {
@@ -394,57 +458,141 @@ public class RandomShitaiAttackScript : MonoBehaviour
             animator.SetBool("Downshot", true);
         }
 
-        if (angle == 90 && ((gameObject.transform.localPosition.y + up) - lastVerticalPosition) >= 1 && gameObject.transform.position != referencePoints[referencePoints.Length - 1].transform.position)
+        if (referenceChoicePath.transform.position.x < gameObject.transform.position.x && numPath == 0)
         {
-            gameObject.transform.rotation = Quaternion.Euler(0, 180, 0);
-            hasArrived = true;
-            angle = 0;
-            //leftFlyFire.Play();
-            //rightFlyFire.Play();
+            numPath = 1;
+        } 
+        else if (referenceChoicePath.transform.position.x > gameObject.transform.position.x && numPath == 0) 
+        {
+            numPath = 2;
         }
 
-        if (hasArrived)
+        if (numPath == 1)
         {
-            interpolateAmount += Time.deltaTime;
-            interpolateAmount = Mathf.Clamp01(interpolateAmount);
-
-            if (gameObject.transform.position != referencePoints[index + 1].transform.position)
+            if (angle == 90 && ((gameObject.transform.localPosition.y + up) - lastVerticalPosition) >= 1 && gameObject.transform.position != referencePoints1[referencePoints1.Length - 1].transform.position)
             {
-                gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, QuadraticLerp(referencePoints[index].transform.position, anchorPoints[index].transform.position, referencePoints[index + 1].transform.position, interpolateAmount), speedToMove);
+                gameObject.transform.rotation = Quaternion.Euler(0, 180, 0);
+                hasArrived = true;
+                angle = 0;
+                leftFlyFire.Play();
+                rightFlyFire.Play();
             }
 
-            if (gameObject.transform.position == referencePoints[index + 1].transform.position)
+            if (hasArrived)
             {
-                interpolateAmount = 0;
+                interpolateAmount += Time.deltaTime;
+                interpolateAmount = Mathf.Clamp01(interpolateAmount);
 
-                if (gameObject.transform.position == referencePoints[referencePoints.Length - 1].transform.position)
+                if (gameObject.transform.position != referencePoints1[index + 1].transform.position)
                 {
-                    angle += Time.deltaTime * 250.0f;
-
-                    if (angle <= 90)
-                    {
-                        gameObject.transform.rotation = Quaternion.Euler(0, 180 - angle, 0);
-                    }
-                    else if (angle == 90)
-                    {
-                        angle = 0;
-                        gameObject.transform.rotation = Quaternion.Euler(0, 90, 0);
-                        hasArrived = false;
-                    }
-
-                    animator.SetBool("Walk", false);
-                    animator.SetBool("Idle", true);
-                    animator.SetBool("Upshot", false);
-                    animator.SetBool("Sideshot", false);
-                    animator.SetBool("Downshot", false);
-
+                    gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, QuadraticLerp(referencePoints1[index].transform.position, anchorPoints1[index].transform.position, referencePoints1[index + 1].transform.position, interpolateAmount), speedToMove);
                 }
-                else if (index < referencePoints.Length)
+
+                if (gameObject.transform.position == referencePoints1[index + 1].transform.position)
                 {
-                    index += 1;
+                    interpolateAmount = 0;
+
+                    if (gameObject.transform.position == referencePoints1[referencePoints1.Length - 1].transform.position)
+                    {
+                        angle += Time.deltaTime * 250.0f;
+
+                        if (angle <= 90)
+                        {
+                            gameObject.transform.rotation = Quaternion.Euler(0, 180 - angle, 0);
+                        }
+                        else if (angle == 90)
+                        {
+                            angle = 0;
+                            gameObject.transform.rotation = Quaternion.Euler(0, 90, 0);
+                            hasArrived = false;
+                        }
+
+                        animator.SetBool("Walk", false);
+                        animator.SetBool("Idle", true);
+                        animator.SetBool("Upshot", false);
+                        animator.SetBool("Sideshot", false);
+                        animator.SetBool("Downshot", false);
+
+                        if (numAttack == 3)
+                        {
+                            numAttack = Random.Range(1, 3);
+                            numPath = 0;
+                            leftFlyFire.Stop();
+                            rightFlyFire.Stop();
+                        }
+
+                    }
+                    else if (index < referencePoints1.Length)
+                    {
+                        index += 1;
+                    }
+                }
+            }
+        } 
+        else if (numPath == 2) 
+        {
+            if (angle == 90 && ((gameObject.transform.localPosition.y + up) - lastVerticalPosition) >= 1 && gameObject.transform.position != referencePoints2[referencePoints2.Length - 1].transform.position)
+            {
+                gameObject.transform.rotation = Quaternion.Euler(0, 180, 0);
+                hasArrived = true;
+                angle = 0;
+                leftFlyFire.Play();
+                rightFlyFire.Play();
+            }
+
+            if (hasArrived)
+            {
+                interpolateAmount += Time.deltaTime;
+                interpolateAmount = Mathf.Clamp01(interpolateAmount);
+
+                if (gameObject.transform.position != referencePoints2[index + 1].transform.position)
+                {
+                    gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, QuadraticLerp(referencePoints2[index].transform.position, anchorPoints2[index].transform.position, referencePoints2[index + 1].transform.position, interpolateAmount), speedToMove);
+                }
+
+                if (gameObject.transform.position == referencePoints2[index + 1].transform.position)
+                {
+                    interpolateAmount = 0;
+
+                    if (gameObject.transform.position == referencePoints2[referencePoints2.Length - 1].transform.position)
+                    {
+                        angle += Time.deltaTime * 250.0f;
+
+                        if (angle <= 90)
+                        {
+                            gameObject.transform.rotation = Quaternion.Euler(0, 180 - angle, 0);
+                        }
+                        else if (angle == 90)
+                        {
+                            angle = 0;
+                            gameObject.transform.rotation = Quaternion.Euler(0, 90, 0);
+                            hasArrived = false;
+                        }
+
+                        animator.SetBool("Walk", false);
+                        animator.SetBool("Idle", true);
+                        animator.SetBool("Upshot", false);
+                        animator.SetBool("Sideshot", false);
+                        animator.SetBool("Downshot", false);
+
+                        if (numAttack == 3)
+                        {
+                            numAttack = Random.Range(1, 3);
+                            numPath = 0;
+                            leftFlyFire.Stop();
+                            rightFlyFire.Stop();
+                        }
+
+                    }
+                    else if (index < referencePoints2.Length)
+                    {
+                        index += 1;
+                    }
                 }
             }
         }
+
+        
     }
 
     private Vector3 QuadraticLerp(Vector3 a, Vector3 b, Vector3 c, float t)
@@ -453,5 +601,24 @@ public class RandomShitaiAttackScript : MonoBehaviour
         Vector3 bc = Vector3.Lerp(b, c, t);
 
         return Vector3.Lerp(ab, bc, interpolateAmount);
+    }
+
+    //Muerte:
+
+    void DeathDrown() 
+    {
+        animator.SetBool("Walk", false);
+        animator.SetBool("Idle", false);
+        animator.SetBool("Upshot", false);
+        animator.SetBool("Sideshot", false);
+        animator.SetBool("Downshot", false);
+        animator.SetBool("Death", true);
+
+        leftFlyFire.Stop();
+        rightFlyFire.Stop();
+        beamFire.Stop();
+        headFire.Stop();
+        leftRainFire.Stop();
+        rightRainFire.Stop();
     }
 }
