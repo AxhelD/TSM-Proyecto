@@ -13,7 +13,7 @@ public class ShitaiHealthScript : MonoBehaviour
     private const float toDamageBarTimerMax = 0.15f;
     private float toDamageBarTimer;
 
-    /*private void FixedUpdate()
+    private void FixedUpdate()
     {
         toDamageBarTimer -= Time.deltaTime;
         if (toDamageBarTimer < 0)
@@ -23,7 +23,7 @@ public class ShitaiHealthScript : MonoBehaviour
                 backHealthBar.fillAmount -= shrinkSpeed * Time.deltaTime;
             }
         }
-    }*/
+    }
 
     public void DamageToEnemy(int damageToEnemy)
     {

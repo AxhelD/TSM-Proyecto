@@ -249,6 +249,7 @@ GameObject:
   - component: {fileID: 6502364474448111943}
   - component: {fileID: 2884247637656440459}
   - component: {fileID: -3161452714995021057}
+  - component: {fileID: 5436759036335435772}
   m_Layer: 0
   m_Name: armWaterJet
   m_TagString: WaterJet
@@ -315,3 +316,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf24bdcfff322584382b8a8c4c02fbb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5436759036335435772
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6494303600307710675}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b3fb81469d44d440a38bc5e1e7846c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageToEnemy: 1
